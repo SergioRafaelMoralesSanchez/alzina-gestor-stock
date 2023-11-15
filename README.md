@@ -1,27 +1,21 @@
 # AlzinaGestorStock
+ 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.8.
+3 pestañas
+Stock, vendido y dashboard
 
-## Development server
+En stock tendrá un buscador arriba y unos filtros debajo de drop-down que al escribir buscará por los nombres de las piezas o tipo de estas al filtrar
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Cada pieza tendrá se mostrará como una carta, está tendrá un botón de vender
 
-## Code scaffolding
+Al darle a vender, está pieza ase cambiará el estado y pasará a salir en la pestaña vendido
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+Pestaña vendido
+Será una tabla ordenada por hora y tipos con precios y horas de venta y nombre del artículo
+Se podrá devolver a no vendido un producto si este se le ha dado por error por ejemplo eliminando la hora de vendido y cambiando su estado
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+Tendrá una 3 pestaña que es Dashboard donde se podrán cargar objetos seleccionando su tipo, nombre y precio y como estado predeterminado será a stock
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Diseño mobile first con angular, bootstrap y firebase

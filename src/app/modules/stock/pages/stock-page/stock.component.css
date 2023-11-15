@@ -1,0 +1,11 @@
+
+.buscadorDiv{
+    flex-direction: row;
+}
+
+@media only screen and (max-width: 1000px) {
+    .buscadorDiv{
+        flex-direction: column;
+        width: 100%;
+    }
+  }
