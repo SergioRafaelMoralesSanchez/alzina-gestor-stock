@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "alzina-gestor-stock:build:production"
+              "buildTarget": "alzina-gestor-stock:build:production"
             },
             "development": {
-              "browserTarget": "alzina-gestor-stock:build:development"
+              "buildTarget": "alzina-gestor-stock:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "alzina-gestor-stock:build"
+            "buildTarget": "alzina-gestor-stock:build"
           }
         },
         "test": {
