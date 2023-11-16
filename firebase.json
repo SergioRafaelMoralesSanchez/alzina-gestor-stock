@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "dist/alzina-gestor-stock",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

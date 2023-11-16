@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build&deploy": "ng build && firebase deploy",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -16,8 +17,7 @@
     "@angular/core": "^17.0.2",
     "@angular/forms": "^17.0.2",
     "@angular/platform-browser": "^17.0.2",
-    "@angular/platform-browser-dynamic": "^17.0.2",
-    "@netlify/angular-runtime": "^2.0.2",
+    "@angular/platform-browser-dynamic": "^17.0.2", 
     "@angular/router": "^17.0.2",
     "bulma": "^0.9.4",
     "firebase": "^10.6.0",
