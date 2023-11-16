@@ -8,4 +8,9 @@ export interface Pieza {
     isSold: boolean
     dateSold: Nullable<Timestamp>
     price: number
+    coments: string
+    paymentMethod: "Metalico" | "Bizum" | "A Deber" | string
+}
+export interface PiezaSold extends Pieza {
+    dateSold:Timestamp
 }

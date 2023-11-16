@@ -12,6 +12,7 @@ import { Nullable } from "../../../../shared/helpers/Nullable.interface";
 export class SoldComponent {
     piezas: Pieza[] = [];
 
+    loading = false;
     constructor(
         private piezasService: PiezasService,
     ) { }
@@ -21,12 +22,18 @@ export class SoldComponent {
     }
 
     async getAllPiezas() {
-        this.piezas = await this.piezasService.getByQuery("isSold", true);
+        try {
+            this.loading = true;
+            this.piezas = (await this.piezasService.getByQuery("isSold", true)).sort((a, b) => a.dateSold! < b.dateSold! ? 1 : -1);
+        } catch (error) {
+            alert(error);
+        } finally {
+            this.loading = false;
+        }
+
     }
 
     async unSoldPieza(index: number) {
-        console.log("🚀 ~ file: stock.component.ts:33 ~ StockComponent ~ soldPieza ~ index:", index);
-        console.log();
         const piezaSold: Pieza = {
             ...this.piezas[index],
             isSold: false,
@@ -36,7 +43,7 @@ export class SoldComponent {
         await this.getAllPiezas();
     }
 
-    dateformatted(dateSold: Nullable<Timestamp>  ) {
+    dateformatted(dateSold: Nullable<Timestamp>) {
         return dateSold ? dateSold.toDate() : "";
     }
 }

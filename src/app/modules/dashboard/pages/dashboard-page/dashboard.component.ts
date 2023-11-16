@@ -19,7 +19,9 @@ export class DashboardComponent implements OnInit {
         type: "",
         isSold: false,
         dateSold: null,
-        price: 0
+        price: 0,
+        coments: "",
+        paymentMethod: ""
     };
     numeroPiezas = 1;
 
@@ -57,7 +59,9 @@ export class DashboardComponent implements OnInit {
                 type: "",
                 isSold: false,
                 dateSold: null,
-                price: 0
+                price: 0,
+                coments: "",
+                paymentMethod: ""
             };
             await this.getAllPiezas();
         }

@@ -1,6 +1,6 @@
 <main class="container p-5">
     <section class="columns">
-        <article class="column is-info">
+        <article class="column is-info" style="min-width: 40%;">
             <h2 class="is-size-3">
                 Nueva Pieza
             </h2>
@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div class="field is-flex is-justify-content-end">
-                <button class="button is-success" [disabled]="!checkFormNuevaPieza()"
-                    (click)="savePieza()">Guardar Pieza</button>
+                <button class="button is-success" [disabled]="!checkFormNuevaPieza()" (click)="savePieza()">Guardar
+                    Pieza</button>
             </div>
         </article>
 
@@ -52,6 +52,8 @@
                             <th>Tipo</th>
                             <th>Vendida</th>
                             <th>Fecha Venta</th>
+                            <th>Comentarios</th>
+                            <th>Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -62,6 +64,8 @@
                             <th>Tipo</th>
                             <th>Vendida?</th>
                             <th>Fecha Venta</th>
+                            <th>Comentarios</th>
+                            <th>Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </tfoot>
@@ -81,6 +85,8 @@
                                 }
                             </td>
                             <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
+                            <td>{{pieza.coments}}</td>
+                            <td>{{pieza.paymentMethod}}</td>
                             <td>
                                 <button class="button is-danger" (click)="eliminarPieza(pieza)">Eliminar</button>
 
