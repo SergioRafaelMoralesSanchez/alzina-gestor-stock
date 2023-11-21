@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PiezasService } from "../../../../core/services/piezas.service";
-import { Pieza } from "../../../../shared/models/pieza.interface";
+import { PaymentMethods, PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
 import { Timestamp } from "firebase/firestore";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
 
@@ -10,7 +10,10 @@ import { Nullable } from "../../../../shared/helpers/Nullable.interface";
     styleUrl: './sold.component.css'
 })
 export class SoldComponent {
+    fechaTotal = new Date();
     piezas: Pieza[] = [];
+
+    paymentMethods = PaymentMethodsArray;
 
     loading = false;
     constructor(
@@ -45,5 +48,19 @@ export class SoldComponent {
 
     dateformatted(dateSold: Nullable<Timestamp>) {
         return dateSold ? dateSold.toDate() : "";
+    }
+
+    getTotalFormPaymentMethod(paymentMethod: PaymentMethods) {
+        return this.piezas.reduce(
+            (accumulator, pieza) => pieza.paymentMethod === paymentMethod ? accumulator + pieza.price : accumulator,
+            0,
+        );
+    }
+
+    getTotalPorFecha() {
+        return this.piezas.reduce(
+            (accumulator, pieza) => accumulator + pieza.price,
+            0,
+        );
     }
 }

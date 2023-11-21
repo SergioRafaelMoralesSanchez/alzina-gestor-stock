@@ -1,60 +1,95 @@
 @if (!loading) {
 <main class="container">
-    <h2 class="is-size-3 mb-2">Piezas</h2>
-    <div class="w-100 m-auto p-3" style="display: block;overflow: auto;">
-        <span></span>
-        <table class="table is-bordered is-striped" *ngIf="piezas.length">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Tipo</th>
-                    <th>Vendida</th>
-                    <th>Fecha Venta</th>
-                    <th>Comentarios</th>
-                    <th>Metodo Pago</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Tipo</th>
-                    <th>Vendida?</th>
-                    <th>Fecha Venta</th>
-                    <th>Comentarios</th>
-                    <th>Metodo Pago</th>
-                    <th>Acciones</th>
-                </tr>
-            </tfoot>
-            <tbody>
-                @for (pieza of piezas; track pieza.id) {
-                <tr>
-                    <td>{{pieza.name}}</td>
-                    <td>{{pieza.price}} €</td>
-                    <td>{{pieza.type}}</td>
-                    <td>
-                        @if (pieza.isSold) {
-                        <span class="has-text-success">Vendido</span>
-                        }
-                        @else{
-                        <span class="has-text-danger">No Vendido</span>
+    <section class="columns">
+        <article class="column">
+            <h2 class="is-size-3 mb-2">Piezas</h2>
+            <div class="w-100 m-auto p-3" style="display: block;overflow: auto;">
+                <span></span>
+                <table class="table is-bordered is-striped" *ngIf="piezas.length">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Tipo</th>
+                            <th>Vendida</th>
+                            <th>Fecha Venta</th>
+                            <th>Comentarios</th>
+                            <th>Metodo Pago</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Tipo</th>
+                            <th>Vendida?</th>
+                            <th>Fecha Venta</th>
+                            <th>Comentarios</th>
+                            <th>Metodo Pago</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @for (pieza of piezas; track pieza.id) {
+                        <tr>
+                            <td>{{pieza.name}}</td>
+                            <td>{{pieza.price}} €</td>
+                            <td>{{pieza.type}}</td>
+                            <td>
+                                @if (pieza.isSold) {
+                                <span class="has-text-success">Vendido</span>
+                                }
+                                @else{
+                                <span class="has-text-danger">No Vendido</span>
 
+                                }
+                            </td>
+                            <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
+                            <td>{{pieza.coments}}</td>
+                            <td>{{pieza.paymentMethod}}</td>
+                            <td class="is-flex is-justify-content-center">
+                                <button class="button is-danger is-small" (click)="unSoldPieza($index)">
+                                    No Vendido
+                                </button>
+                            </td>
+                        </tr>
                         }
-                    </td>
-                    <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
-                    <td>{{pieza.coments}}</td>
-                    <td>{{pieza.paymentMethod}}</td>
-                    <td class="is-flex is-justify-content-center">
-                        <button class="button is-danger is-small" (click)="unSoldPieza($index)">No Vendido</button>
-                    </td>
-                </tr>
-                }
 
-            </tbody>
-        </table>
-    </div>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+        <article class="column">
+
+            <h2 class="is-size-3 mb-2">Desglose Ventas</h2>
+            <div class="w-100 m-auto p-3" style="display: block;overflow: auto;">
+                <span></span>
+                <table class="table  is-striped" *ngIf="piezas.length">
+                    <thead>
+                        <tr>
+                            <th>Metodo de Pago</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (paymentMethod of paymentMethods; track paymentMethod) {
+
+                        <tr>
+                            <td>{{paymentMethod}}</td>
+                            <td>{{getTotalFormPaymentMethod(paymentMethod)}} €</td>
+                        </tr>
+                        }
+                        <tr>
+                            <th>Total</th>
+                            <td>{{getTotalPorFecha()}} €</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </article>
+    </section>
 </main>
 } @else {
 <div class="w-100 is-flex is-justify-content-center is-align-items-center">

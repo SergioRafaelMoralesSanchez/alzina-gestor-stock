@@ -9,8 +9,10 @@ export interface Pieza {
     dateSold: Nullable<Timestamp>
     price: number
     coments: string
-    paymentMethod: "Metalico" | "Bizum" | "A Deber" | string
+    paymentMethod: PaymentMethods
 }
+export const PaymentMethodsArray : PaymentMethods[] = ["Metalico", "Bizum", "A Deber", "Otro"];
+export type PaymentMethods = "Metalico" | "Bizum" | "A Deber" | "Otro"
 export interface PiezaSold extends Pieza {
-    dateSold:Timestamp
+    dateSold: Timestamp
 }

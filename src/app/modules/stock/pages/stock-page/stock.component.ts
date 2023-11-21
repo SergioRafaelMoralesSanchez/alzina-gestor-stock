@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Timestamp } from "firebase/firestore";
 import { PiezasService } from "../../../../core/services/piezas.service";
 import { TipoPiezasService } from "../../../../core/services/tipo-piezas.service";
-import { Pieza } from "../../../../shared/models/pieza.interface";
-import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";
+import { PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
+import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 
 @Component({
     selector: 'app-stock',
@@ -16,7 +16,7 @@ export class StockComponent implements OnInit {
     piezasRaw: Pieza[] = [];
     currentPieza: Undefinable<Pieza>;
 
-    paymentMethods: string[] = ["Metalico", "Bizum", "A Deber", "Otro"];
+    paymentMethods = PaymentMethodsArray;
 
     tipos: TipoPieza[] = [];
     tipoPiezaFiltro: string = "";

@@ -8,7 +8,7 @@
             <div class="m-2 w-100">
                 <div class="select w-100">
                     <select class="w-100" [(ngModel)]="tipoPiezaFiltro" (change)="applyFilters()">
-                        <option value="">No Filter</option>
+                        <option value="">No Filtro</option>
                         @for (tipo of tipos; track $index) {
                         <option>{{tipo.name}}</option>
                         }

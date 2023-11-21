@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PiezasService } from "../../../../core/services/piezas.service";
 import { TipoPiezasService } from "../../../../core/services/tipo-piezas.service";
-import { Pieza } from "../../../../shared/models/pieza.interface";
+import { PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
 import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 import { Timestamp } from "firebase/firestore";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
         dateSold: null,
         price: 0,
         coments: "",
-        paymentMethod: ""
+        paymentMethod: PaymentMethodsArray[0]
     };
     numeroPiezas = 1;
 
@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit {
                 dateSold: null,
                 price: 0,
                 coments: "",
-                paymentMethod: ""
+                paymentMethod: PaymentMethodsArray[0]
             };
             await this.getAllPiezas();
         }
