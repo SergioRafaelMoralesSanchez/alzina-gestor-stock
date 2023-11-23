@@ -3,6 +3,8 @@ import { PiezasService } from "../../../../core/services/piezas.service";
 import { PaymentMethods, PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
 import { Timestamp } from "firebase/firestore";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
+import { DatePipe } from "@angular/common";
+import { sortArray } from "../../../../shared/components/utils/utils";
 
 @Component({
     selector: 'app-sold',
@@ -10,13 +12,17 @@ import { Nullable } from "../../../../shared/helpers/Nullable.interface";
     styleUrl: './sold.component.css'
 })
 export class SoldComponent {
-    fechaTotal = new Date();
+    fechaFiltro = this.datePipe.transform(new Date(), "dd/MM/yyyy");
+    fechasVentas: string[] = [];
     piezas: Pieza[] = [];
 
     paymentMethods = PaymentMethodsArray;
 
     loading = false;
+
+    sortFieldPieza = "";
     constructor(
+        private datePipe: DatePipe,
         private piezasService: PiezasService,
     ) { }
 
@@ -28,6 +34,7 @@ export class SoldComponent {
         try {
             this.loading = true;
             this.piezas = (await this.piezasService.getByQuery("isSold", true)).sort((a, b) => a.dateSold! < b.dateSold! ? 1 : -1);
+            this.generateFechasVentas();
         } catch (error) {
             alert(error);
         } finally {
@@ -46,21 +53,53 @@ export class SoldComponent {
         await this.getAllPiezas();
     }
 
+    generateFechasVentas() {
+        this.fechasVentas = [];
+        this.piezas.forEach(pieza => {
+            const fechaTransformada = this.generarFechaSold(pieza);
+            if (!this.fechasVentas.find(fecha => fecha === fechaTransformada)) {
+                this.fechasVentas.push(this.datePipe.transform(this.dateformatted(pieza.dateSold), "dd/MM/yyyy")!);
+            }
+        });
+    }
+
     dateformatted(dateSold: Nullable<Timestamp>) {
         return dateSold ? dateSold.toDate() : "";
     }
 
     getTotalFormPaymentMethod(paymentMethod: PaymentMethods) {
         return this.piezas.reduce(
-            (accumulator, pieza) => pieza.paymentMethod === paymentMethod ? accumulator + pieza.price : accumulator,
-            0,
-        );
+            (accumulator, pieza) => {
+                const fechaTransformada = this.generarFechaSold(pieza);
+                if (pieza.paymentMethod === paymentMethod && fechaTransformada === this.fechaFiltro) {
+                    accumulator += pieza.price;
+                }
+                return accumulator;
+            }, 0,);
+    }
+    generarFechaSold(pieza: Pieza) {
+        return this.datePipe.transform(this.dateformatted(pieza.dateSold), "dd/MM/yyyy") ?? "";
     }
 
     getTotalPorFecha() {
         return this.piezas.reduce(
-            (accumulator, pieza) => accumulator + pieza.price,
-            0,
-        );
+            (accumulator, pieza) => {
+                const fechaTransformada = this.generarFechaSold(pieza);
+                if (fechaTransformada === this.fechaFiltro) {
+                    accumulator += pieza.price;
+                }
+                return accumulator;
+            }, 0);
+    }
+
+    clearFilters() {
+        this.fechaFiltro = this.datePipe.transform(new Date(), "dd/MM/yyyy");
+    }
+
+    sortPiezas(field: keyof Pieza) {
+        const order = this.sortFieldPieza === field ? 1 : -1;
+        this.sortFieldPieza = field;
+        this.piezas = sortArray<Pieza>(this.piezas, field, order);
+
     }
 }

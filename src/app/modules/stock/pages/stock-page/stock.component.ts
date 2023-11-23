@@ -65,7 +65,7 @@ export class StockComponent implements OnInit {
         }
     }
 
-    cleanFilters() {
+    clearFilters() {
         this.tipoPiezaFiltro = "";
         this.nombreFiltro = "";
         this.piezas = [...this.piezasRaw];

@@ -7,3 +7,21 @@ body {
 .w-100 {
     width: 100%;
 }
+
+.container {
+    padding: 20px;
+}
+
+.field {
+    margin-bottom: 0.75em;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 500px) {
+    .field {
+        width: 100%;
+    }
+}

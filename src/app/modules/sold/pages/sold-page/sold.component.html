@@ -1,32 +1,55 @@
 @if (!loading) {
 <main class="container">
-    <section class="columns">
-        <article class="column">
-            <h2 class="is-size-3 mb-2">Piezas</h2>
-            <div class="w-100 m-auto p-3" style="display: block;overflow: auto;">
-                <span></span>
-                <table class="table is-bordered is-striped" *ngIf="piezas.length">
+    <header class="my-2">
+        <div
+            class="is-flex is-justify-content-space-between is-align-items-flex-end is-flex-wrap-wrap is-flex-direction-row">
+            <div class="field w-100">
+                <label class="label">Fecha de Venta</label>
+                <div class="control">
+                    <div class="select w-100">
+                        <select class="w-100" (change)="getTotalPorFecha()" [(ngModel)]="fechaFiltro">
+                            @for (fecha of fechasVentas; track fecha) {
+                            <option>{{ fecha }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field w-100">
+                <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
+            </div>
+        </div>
+    </header>
+    <section class="is-flex is-flex-wrap-wrap">
+        <article class="w-100 my-2">
+            <header>
+                <h2 class="is-size-3 mb-2">
+                    Piezas
+                </h2>
+            </header>
+            <div style="overflow-x: scroll">
+                <table class="table is-striped">
                     <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th>Tipo</th>
+                        <tr class="w-100">
+                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
                             <th>Vendida</th>
                             <th>Fecha Venta</th>
-                            <th>Comentarios</th>
-                            <th>Metodo Pago</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tfoot>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th>Tipo</th>
-                            <th>Vendida?</th>
+                        <tr class="w-100">
+                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
+                            <th>Vendida</th>
                             <th>Fecha Venta</th>
-                            <th>Comentarios</th>
-                            <th>Metodo Pago</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </tfoot>
@@ -48,7 +71,7 @@
                             <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
                             <td>{{pieza.coments}}</td>
                             <td>{{pieza.paymentMethod}}</td>
-                            <td class="is-flex is-justify-content-center">
+                            <td class="">
                                 <button class="button is-danger is-small" (click)="unSoldPieza($index)">
                                     No Vendido
                                 </button>
@@ -60,12 +83,12 @@
                 </table>
             </div>
         </article>
-        <article class="column">
-
-            <h2 class="is-size-3 mb-2">Desglose Ventas</h2>
-            <div class="w-100 m-auto p-3" style="display: block;overflow: auto;">
-                <span></span>
-                <table class="table  is-striped" *ngIf="piezas.length">
+        <article class="w-100 my-2">
+            <header>
+                <h2 class="is-size-3 mb-2">Desglose Ventas</h2>
+            </header>
+            <div style="overflow-x: scroll">
+                <table class="table is-striped w-100">
                     <thead>
                         <tr>
                             <th>Metodo de Pago</th>

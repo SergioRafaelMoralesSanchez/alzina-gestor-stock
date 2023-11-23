@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Timestamp } from "firebase/firestore";
 import { PiezasService } from "../../../../core/services/piezas.service";
 import { TipoPiezasService } from "../../../../core/services/tipo-piezas.service";
-import { PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
-import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
-import { Timestamp } from "firebase/firestore";
+import { sortArray } from "../../../../shared/components/utils/utils";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
+import { PaymentMethodsArray, Pieza, } from "../../../../shared/models/pieza.interface";
+import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 
 @Component({
     selector: 'app-dashboard',
@@ -30,6 +31,8 @@ export class DashboardComponent implements OnInit {
         id: "",
         name: ""
     };
+    sortFieldPieza = "";
+    sortFieldTipoPieza = "";
     constructor(
         private piezasService: PiezasService,
         private tipoPiezasService: TipoPiezasService
@@ -40,11 +43,10 @@ export class DashboardComponent implements OnInit {
 
         await this.getAllTiposPiezas();
         await this.getAllPiezas();
-        console.log("🚀 ~ file: stock.component.ts:41 ~ StockComponent ~ ngOnInit ~ this.piezas:", this.piezas);
     }
 
     async getAllPiezas() {
-        this.piezas = await this.piezasService.getAll();
+        this.piezas = (await this.piezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
     }
     async savePieza() {
         if (this.checkFormNuevaPieza()) {
@@ -85,7 +87,7 @@ export class DashboardComponent implements OnInit {
      */
 
     async getAllTiposPiezas() {
-        this.tiposPieza = await this.tipoPiezasService.getAll();
+        this.tiposPieza = (await this.tipoPiezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
     }
 
     async saveNuevoTipoPieza() {
@@ -107,6 +109,19 @@ export class DashboardComponent implements OnInit {
 
     checkFormNuevoTipoPieza() {
         return !!this.nuevoTipoPieza.name.length;
+    }
+
+    sortPiezas(field: keyof Pieza) {
+        const order = this.sortFieldPieza === field ? 1 : -1;
+        this.sortFieldPieza = field;
+        this.piezas = sortArray<Pieza>(this.piezas, field, order);
+
+    }
+
+    sortTipoPiezas(field: keyof TipoPieza) {
+        const order = this.sortFieldTipoPieza === field ? 1 : -1;
+        this.sortFieldTipoPieza = field;
+        this.tiposPieza = sortArray<TipoPieza>(this.tiposPieza, field, order);
     }
 
 }

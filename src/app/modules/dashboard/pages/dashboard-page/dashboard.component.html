@@ -1,71 +1,82 @@
 <main class="container p-5">
-    <section class="columns">
-        <article class="column is-info" style="min-width: 40%;">
-            <h2 class="is-size-3">
-                Nueva Pieza
-            </h2>
-            <div class="field">
-                <label class="label">Nombre pieza</label>
-                <div class="control">
-                    <input [(ngModel)]="nuevaPieza.name" class="input" type="text" placeholder="Text input">
-                </div>
-            </div>
-            <div class="field">
-                <label class="label">Precio pieza</label>
-                <div class="control">
-                    <input [(ngModel)]="nuevaPieza.price" class="input" type="number" placeholder="0">
-                </div>
-            </div>
-            <div class="field">
-                <label class="label">Numero de Piezas</label>
-                <div class="control">
-                    <input [(ngModel)]="numeroPiezas" class="input" type="number" placeholder="1">
-                </div>
-            </div>
-            <div class="field">
-                <label class="label">Tipo de Pieza</label>
-                <div class="control">
-                    <div class="select w-100">
-                        <select class="w-100" [(ngModel)]="nuevaPieza.type">
-                            <option value="">Selecciona un tipo</option>
-                            @for (tipoPieza of tiposPieza; track tipoPieza.id) {
-                            <option>{{tipoPieza.name}}</option>
-                            }
-                        </select>
+    <section>
+        <article>
+            <header>
+                <h2 class="is-size-3 mb-2">
+                    Nueva Pieza
+                </h2>
+            </header>
+            <div class="formularioNuevaPieza">
+                <div class="field">
+                    <label class="label">Nombre pieza</label>
+                    <div class="control">
+                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.name" class="input" type="text"
+                            placeholder="Text input">
                     </div>
                 </div>
-            </div>
-            <div class="field is-flex is-justify-content-end">
-                <button class="button is-success" [disabled]="!checkFormNuevaPieza()" (click)="savePieza()">Guardar
-                    Pieza</button>
+                <div class="field">
+                    <label class="label">Precio pieza</label>
+                    <div class="control">
+                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.price" class="input" type="number"
+                            placeholder="0">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Numero de Piezas</label>
+                    <div class="control">
+                        <input (keyup.enter)="savePieza()" [(ngModel)]="numeroPiezas" class="input" type="number"
+                            placeholder="1">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Tipo de Pieza</label>
+                    <div class="control">
+                        <div class="select w-100">
+                            <select class="w-100" (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.type">
+                                <option value="">Selecciona un tipo</option>
+                                @for (tipoPieza of tiposPieza; track tipoPieza.id) {
+                                <option>{{tipoPieza.name}}</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <button class="button is-success" [disabled]="!checkFormNuevaPieza()" (click)="savePieza()">Guardar
+                        Pieza</button>
+                </div>
             </div>
         </article>
 
-        <article class="column ">
-            <h2 class="is-size-3 mb-2">Piezas</h2>
+        <article>
+            <header>
+                <h2 class="is-size-3 mb-2">
+                    Piezas
+                </h2>
+            </header>
             <div class="tableDashboard">
-                <table class="table is-bordered is-striped w-100" *ngIf="piezas.length">
+                <table class="table is-striped w-100">
                     <thead>
                         <tr class="w-100">
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th>Tipo</th>
-                            <th>Vendida</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('isSold')">Vendida</th>
                             <th>Fecha Venta</th>
-                            <th>Comentarios</th>
-                            <th>Metodo Pago</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr class="w-100">
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th>Tipo</th>
-                            <th>Vendida?</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('isSold')">Vendida</th>
                             <th>Fecha Venta</th>
-                            <th>Comentarios</th>
-                            <th>Metodo Pago</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </tfoot>
@@ -100,35 +111,44 @@
         </article>
     </section>
     <section class="columns">
-        <article class="column is-info">
-            <h2 class="is-size-3">
-                Nuevo tipo Pieza
-            </h2>
-            <div class="field">
-                <label class="label">Nombre tipo</label>
-                <div class="control">
-                    <input [(ngModel)]="nuevoTipoPieza.name" class="input" type="text" placeholder="Jarron">
+        <article class="column">
+            <header>
+                <h2 class="is-size-3 mb-2">
+                    Nuevo tipo Pieza
+                </h2>
+            </header>
+            <div>
+                <div class="field">
+                    <label class="label">Nombre tipo</label>
+                    <div class="control">
+                        <input (keyup.enter)="saveNuevoTipoPieza()" [(ngModel)]="nuevoTipoPieza.name" class="input"
+                            type="text" placeholder="Jarron">
+                    </div>
                 </div>
-            </div>
 
-            <div class="field is-flex is-justify-content-end">
-                <button class="button is-success" [disabled]="!checkFormNuevoTipoPieza()"
-                    (click)="saveNuevoTipoPieza()">Guardar Tipo</button>
+                <div class="field">
+                    <button class="button is-success" [disabled]="!checkFormNuevoTipoPieza()"
+                        (click)="saveNuevoTipoPieza()">Guardar Tipo</button>
+                </div>
             </div>
         </article>
         <article class="column">
-            <h2 class="is-size-3 mb-2">Tipos de Pieza</h2>
+            <header>
+                <h2 class="is-size-3 mb-2">
+                    Tipos de Pieza
+                </h2>
+            </header>
             <div class="tableDashboard">
                 <table class="table is-bordered is-striped w-100" *ngIf="piezas.length">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th class="cursor-pointer" (click)="sortTipoPiezas('name')">Nombre</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Nombre</th>
+                            <th class="cursor-pointer" (click)="sortTipoPiezas('name')">Nombre</th>
                             <th>Acciones</th>
                         </tr>
                     </tfoot>

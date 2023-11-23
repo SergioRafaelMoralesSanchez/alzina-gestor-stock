@@ -11,7 +11,7 @@ export interface Pieza {
     coments: string
     paymentMethod: PaymentMethods
 }
-export const PaymentMethodsArray : PaymentMethods[] = ["Metalico", "Bizum", "A Deber", "Otro"];
+export const PaymentMethodsArray: PaymentMethods[] = ["Metalico", "Bizum", "A Deber", "Otro"];
 export type PaymentMethods = "Metalico" | "Bizum" | "A Deber" | "Otro"
 export interface PiezaSold extends Pieza {
     dateSold: Timestamp

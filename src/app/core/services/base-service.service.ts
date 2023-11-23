@@ -61,7 +61,6 @@ export class BaseService<T> {
         try {
             const docRef = await addDoc(collection(this.db, this.collectionName), encargo as DocumentData);
 
-            console.log("Document written with ID: ", docRef.id);
             return {
                 ...docRef as T,
                 id: docRef.id

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { FormsModule } from "@angular/forms";
@@ -15,8 +15,9 @@ import { SoldRoutingModule } from './sold-routing.module';
         SoldRoutingModule
     ],
     providers: [
-        PiezasService, 
-        TipoPiezasService
+        PiezasService,
+        TipoPiezasService,
+        DatePipe
     ]
 })
 export class SoldModule { }
