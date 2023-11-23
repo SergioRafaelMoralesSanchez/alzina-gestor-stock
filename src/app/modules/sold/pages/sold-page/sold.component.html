@@ -20,15 +20,15 @@
             </div>
         </div>
     </header>
-    <section class="is-flex is-flex-wrap-wrap">
-        <article class="w-100 my-2">
+    <section class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
+        <article class="my-2">
             <header>
                 <h2 class="is-size-3 mb-2">
                     Piezas
                 </h2>
             </header>
-            <div style="overflow-x: scroll">
-                <table class="table is-striped">
+            <div style="overflow-x: auto">
+                <table class="table is-striped w-100" >
                     <thead>
                         <tr class="w-100">
                             <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
@@ -83,7 +83,7 @@
                 </table>
             </div>
         </article>
-        <article class="w-100 my-2">
+        <article class="my-2">
             <header>
                 <h2 class="is-size-3 mb-2">Desglose Ventas</h2>
             </header>

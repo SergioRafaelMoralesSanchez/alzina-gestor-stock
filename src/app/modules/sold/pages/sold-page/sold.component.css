@@ -1,1 +1,5 @@
- 
+@media only screen and (max-width: 1450px) {
+    article {
+        width: 100%;
+    }
+}
