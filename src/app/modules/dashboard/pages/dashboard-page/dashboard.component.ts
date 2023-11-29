@@ -29,7 +29,8 @@ export class DashboardComponent implements OnInit {
     tiposPieza: TipoPieza[] = [];
     nuevoTipoPieza: TipoPieza = {
         id: "",
-        name: ""
+        name: "",
+        numPiezas: 1
     };
     sortFieldPieza = "";
     sortFieldTipoPieza = "";
@@ -95,7 +96,8 @@ export class DashboardComponent implements OnInit {
             await this.tipoPiezasService.addDoc(this.nuevoTipoPieza);
             this.nuevoTipoPieza = {
                 id: "",
-                name: ""
+                name: "",
+                numPiezas: 1
             };
             await this.getAllTiposPiezas();
         }

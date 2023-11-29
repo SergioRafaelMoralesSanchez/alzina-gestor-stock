@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { StockRoutingModule } from './stock-routing.module';
-import { PiezasService } from "../../core/services/piezas.service";
 import { FormsModule } from "@angular/forms";
+import { PiezasService } from "../../core/services/piezas.service";
 import { StockComponent } from "./pages/stock-page/stock.component";
-import { TipoPiezasService } from "../../core/services/tipo-piezas.service";
+import { StockRoutingModule } from './stock-routing.module';
 
 @NgModule({
     declarations: [StockComponent],
@@ -15,8 +14,7 @@ import { TipoPiezasService } from "../../core/services/tipo-piezas.service";
         StockRoutingModule
     ],
     providers: [
-        PiezasService,
-        TipoPiezasService
+        PiezasService
     ]
 })
 export class StockModule { }

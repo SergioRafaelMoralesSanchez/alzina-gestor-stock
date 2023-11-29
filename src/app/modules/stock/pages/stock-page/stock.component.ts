@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Timestamp } from "firebase/firestore";
 import { PiezasService } from "../../../../core/services/piezas.service";
-import { TipoPiezasService } from "../../../../core/services/tipo-piezas.service";
 import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";
 import { PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
 import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
@@ -26,13 +25,23 @@ export class StockComponent implements OnInit {
     loading = false;
 
     constructor(
-        private piezasService: PiezasService,
-        private tipoPiezasService: TipoPiezasService
+        private piezasService: PiezasService
     ) { }
 
     async ngOnInit() {
-        this.tipos = await this.tipoPiezasService.getAll();
         await this.getAllPiezas();
+        this.piezas.forEach(pieza => {
+            const index = this.tipos.findIndex(tipo => tipo.name === pieza.type);
+            if (index === -1) {
+                this.tipos.push({
+                    id: "",
+                    name: pieza.type,
+                    numPiezas: 1
+                });
+            } else {
+                this.tipos[index].numPiezas += 1;
+            }
+        });
     }
 
     showModalVenderPieza(index: number) {
