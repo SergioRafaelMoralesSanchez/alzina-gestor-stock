@@ -8,6 +8,7 @@
                 <div class="control">
                     <div class="select w-100">
                         <select class="w-100" (change)="getTotalPorFecha()" [(ngModel)]="fechaFiltro">
+                            <option value="all">Total</option>
                             @for (fecha of fechasVentas; track fecha) {
                             <option>{{ fecha }}</option>
                             }

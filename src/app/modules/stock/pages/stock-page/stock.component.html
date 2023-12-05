@@ -29,13 +29,13 @@
 
     @if (!loading) {
     <main>
-        <section class="columns is-multiline  is-justify-content-center">
+        <section class="is-multiline  is-justify-content-center " style="width: 100%;">
             @for (pieza of piezas; track $index) {
-            <div class="card m-2 column">
+            <div class="card m-2">
                 <div class="card-content">
-                    <div class="title is-flex is-justify-content-space-between" style="text-wrap: nowrap;">
-                        <span>{{pieza.name}}</span>
-                        <span>{{pieza.price}} €</span>
+                    <div class="title is-flex is-justify-content-space-between">
+                        <p>{{pieza.name}}</p>
+                        <span style="text-wrap: nowrap;">{{pieza.price}} €</span>
                     </div>
                     <p class="subtitle">
                         {{pieza.type}}

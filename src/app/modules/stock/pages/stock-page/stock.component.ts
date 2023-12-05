@@ -70,8 +70,13 @@ export class StockComponent implements OnInit {
             };
             await this.piezasService.updateDoc(piezaSold.id, piezaSold as Pieza);
             this.showModal = false;
-            await this.getAllPiezas();
+            this.eliminatePieza(piezaSold);
+            // await this.getAllPiezas();
         }
+    }
+
+    eliminatePieza(piezaSold: Pieza) {
+        this.piezas = this.piezas.filter(pieza => pieza.id !== piezaSold.id);
     }
 
     clearFilters() {

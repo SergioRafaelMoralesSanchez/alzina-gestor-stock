@@ -21,7 +21,7 @@
                             placeholder="0">
                     </div>
                 </div>
-                <div class="field">
+                <div class="field" *ngIf="!isEditMode">
                     <label class="label">Numero de Piezas</label>
                     <div class="control">
                         <input (keyup.enter)="savePieza()" [(ngModel)]="numeroPiezas" class="input" type="number"
@@ -42,12 +42,42 @@
                     </div>
                 </div>
                 <div class="field">
-                    <button class="button is-success" [disabled]="!checkFormNuevaPieza()" (click)="savePieza()">Guardar
+                    <button class="button is-success" *ngIf="!isEditMode" [disabled]="!checkFormNuevaPieza()"
+                        (click)="savePieza()">Guardar
+                        Pieza</button>
+                    <button class="button is-link" *ngIf="isEditMode" [disabled]="!checkFormNuevaPieza()"
+                        (click)="updatePieza()">Actualizar
                         Pieza</button>
                 </div>
             </div>
         </article>
 
+        <header class="mb-6">
+            <h2 class="is-size-3 mb-2">
+                Stock
+            </h2>
+            <div class="is-flex  is-justify-content-center is-align-items-center w-100 m-auto buscadorDiv">
+                <div class="m-2 w-100">
+                    <input class="input is-fullwidth" type="text" placeholder="Nombre pieza" [(ngModel)]="nombreFiltro"
+                        (input)="applyFilters()">
+                </div>
+                <div class="m-2 w-100">
+                    <div class="select w-100">
+                        <select class="w-100" [(ngModel)]="tipoPiezaFiltro" (change)="applyFilters()">
+                            <option value="">No Filtro</option>
+                            @for (tipo of tiposPieza; track $index) {
+                            <option [value]="tipo.name">
+                                {{tipo.numPiezas}} - {{tipo.name}}
+                            </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="m-2 w-100">
+                    <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
+                </div>
+            </div>
+        </header>
         <article>
             <header>
                 <h2 class="is-size-3 mb-2">
@@ -99,8 +129,11 @@
                             <td>{{pieza.coments}}</td>
                             <td>{{pieza.paymentMethod}}</td>
                             <td>
-                                <button class="button is-danger" (click)="eliminarPieza(pieza)">Eliminar</button>
-
+                                <div class="is-flex is-flex-wrap-nowrap">
+                                    <button class="mx-1 button is-link" (click)="editarPieza(pieza)">Editar</button>
+                                    <button class="mx-1 button is-danger"
+                                        (click)="eliminarPieza(pieza)">Eliminar</button>
+                                </div>
                             </td>
                         </tr>
                         }
@@ -127,8 +160,10 @@
                 </div>
 
                 <div class="field">
-                    <button class="button is-success" [disabled]="!checkFormNuevoTipoPieza()"
+                    <button class="button is-success" *ngIf="!isEditModeTipo" [disabled]="!checkFormNuevoTipoPieza()"
                         (click)="saveNuevoTipoPieza()">Guardar Tipo</button>
+                    <button class="button is-link" *ngIf="isEditModeTipo" [disabled]="!checkFormNuevoTipoPieza()"
+                        (click)="updateTipoPieza()">Actualizar Tipo</button>
                 </div>
             </div>
         </article>
@@ -156,9 +191,13 @@
                         @for (tipoPieza of tiposPieza; track tipoPieza.id) {
                         <tr>
                             <td>{{tipoPieza.name}}</td>
-                            <td class="is-flex is-justify-content-end">
-                                <button class="button is-danger"
-                                    (click)="eliminarTipoPieza(tipoPieza)">Eliminar</button>
+                            <td>
+                                <div class="is-flex is-flex-wrap-nowrap">
+                                    <button class="mx-1 button is-link"
+                                        (click)="editarTipoPieza(tipoPieza)">Editar</button>
+                                    <button class="mx-1 button is-danger"
+                                        (click)="eliminarTipoPieza(tipoPieza)">Eliminar</button>
+                                </div>
                             </td>
                         </tr>
                         }

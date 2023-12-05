@@ -12,7 +12,7 @@ import { sortArray } from "../../../../shared/components/utils/utils";
     styleUrl: './sold.component.css'
 })
 export class SoldComponent {
-    fechaFiltro = this.datePipe.transform(new Date(), "dd/MM/yyyy");
+    fechaFiltro: string | null = "all";
     fechasVentas: string[] = [];
     piezas: Pieza[] = [];
 
@@ -42,7 +42,6 @@ export class SoldComponent {
         }
 
     }
-
     async unSoldPieza(index: number) {
         const piezaSold: Pieza = {
             ...this.piezas[index],
@@ -50,9 +49,14 @@ export class SoldComponent {
             dateSold: null
         };
         await this.piezasService.updateDoc(piezaSold.id, piezaSold);
-        await this.getAllPiezas();
+        // await this.getAllPiezas();
+        this.eliminatePieza(piezaSold);
+
     }
 
+    eliminatePieza(piezaSold: Pieza) {
+        this.piezas = this.piezas.filter(pieza => pieza.id !== piezaSold.id);
+    }
     generateFechasVentas() {
         this.fechasVentas = [];
         this.piezas.forEach(pieza => {
@@ -71,7 +75,7 @@ export class SoldComponent {
         return this.piezas.reduce(
             (accumulator, pieza) => {
                 const fechaTransformada = this.generarFechaSold(pieza);
-                if (pieza.paymentMethod === paymentMethod && fechaTransformada === this.fechaFiltro) {
+                if (this.fechaFiltro === "all" || (pieza.paymentMethod === paymentMethod && fechaTransformada === this.fechaFiltro)) {
                     accumulator += pieza.price;
                 }
                 return accumulator;
@@ -85,7 +89,7 @@ export class SoldComponent {
         return this.piezas.reduce(
             (accumulator, pieza) => {
                 const fechaTransformada = this.generarFechaSold(pieza);
-                if (fechaTransformada === this.fechaFiltro) {
+                if (this.fechaFiltro === "all" || fechaTransformada === this.fechaFiltro) {
                     accumulator += pieza.price;
                 }
                 return accumulator;
@@ -93,7 +97,7 @@ export class SoldComponent {
     }
 
     clearFilters() {
-        this.fechaFiltro = this.datePipe.transform(new Date(), "dd/MM/yyyy");
+        this.fechaFiltro = "all";
     }
 
     sortPiezas(field: keyof Pieza) {
