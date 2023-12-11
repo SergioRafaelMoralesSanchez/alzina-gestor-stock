@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DocumentData, Firestore, addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { DocumentData, Firestore, WhereFilterOp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { appFirebase } from "../../../main";
 import { Undefinable } from "../../shared/helpers/Undefinable.interface";
 
@@ -32,8 +32,8 @@ export class BaseService<T> {
         return data;
     }
 
-    async getByQuery(key: string, value: string | boolean): Promise<T[]> {
-        const q = query(collection(this.db, this.collectionName), where(key, "==", value));
+    async getByQuery(key: string, value: string | number | boolean | [], comparation: WhereFilterOp = "=="): Promise<T[]> {
+        const q = query(collection(this.db, this.collectionName), where(key, comparation, value));
         const querySnapshot = await getDocs(q);
         const data: T[] = querySnapshot.docs.map((d) => ({
             ...d.data() as T,

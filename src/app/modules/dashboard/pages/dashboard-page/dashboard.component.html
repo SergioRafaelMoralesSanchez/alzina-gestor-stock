@@ -1,3 +1,4 @@
+@if (!loading) {
 <main class="container p-5">
     <section>
         <article>
@@ -21,10 +22,10 @@
                             placeholder="0">
                     </div>
                 </div>
-                <div class="field" *ngIf="!isEditMode">
+                <div class="field">
                     <label class="label">Numero de Piezas</label>
                     <div class="control">
-                        <input (keyup.enter)="savePieza()" [(ngModel)]="numeroPiezas" class="input" type="number"
+                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.stock" class="input" type="number"
                             placeholder="1">
                     </div>
                 </div>
@@ -52,32 +53,12 @@
             </div>
         </article>
 
-        <header class="mb-6">
-            <h2 class="is-size-3 mb-2">
-                Stock
-            </h2>
-            <div class="is-flex  is-justify-content-center is-align-items-center w-100 m-auto buscadorDiv">
-                <div class="m-2 w-100">
-                    <input class="input is-fullwidth" type="text" placeholder="Nombre pieza" [(ngModel)]="nombreFiltro"
-                        (input)="applyFilters()">
-                </div>
-                <div class="m-2 w-100">
-                    <div class="select w-100">
-                        <select class="w-100" [(ngModel)]="tipoPiezaFiltro" (change)="applyFilters()">
-                            <option value="">No Filtro</option>
-                            @for (tipo of tiposPieza; track $index) {
-                            <option [value]="tipo.name">
-                                {{tipo.numPiezas}} - {{tipo.name}}
-                            </option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="m-2 w-100">
-                    <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
-                </div>
-            </div>
-        </header>
+      
+        <h2 class="is-size-3 mb-2">
+            Buscador 
+        </h2>
+        <buscador-piezas [(piezas)]="piezas"></buscador-piezas>
+        
         <article>
             <header>
                 <h2 class="is-size-3 mb-2">
@@ -91,43 +72,30 @@
                             <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
                             <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
                             <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('isSold')">Vendida</th>
-                            <th>Fecha Venta</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('type')">Stock</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('ventas')">Ventas</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr class="w-100">
-                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('isSold')">Vendida</th>
-                            <th>Fecha Venta</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @for (pieza of piezas; track pieza.id) {
                         <tr class="w-100">
                             <td>{{pieza.name}}</td>
                             <td>{{pieza.price}} €</td>
                             <td>{{pieza.type}}</td>
+                            <td>{{pieza.stock}}/{{pieza.stock + pieza.ventas.length}}</td>
                             <td>
-                                @if (pieza.isSold) {
-                                <span class="has-text-success">Vendido</span>
+                                @if (pieza.ventas.length) {
+                                <strong class="has-text-success">
+                                    {{pieza.ventas.length}}
+                                </strong>
                                 }
                                 @else{
-                                <span class="has-text-danger">No Vendido</span>
-
+                                <strong class="has-text-danger">
+                                    No Vendido
+                                </strong>
                                 }
                             </td>
-                            <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
-                            <td>{{pieza.coments}}</td>
-                            <td>{{pieza.paymentMethod}}</td>
                             <td>
                                 <div class="is-flex is-flex-wrap-nowrap">
                                     <button class="mx-1 button is-link" (click)="editarPieza(pieza)">Editar</button>
@@ -208,3 +176,9 @@
 
     </section>
 </main>
+
+} @else {
+    <div class="w-100 is-flex is-justify-content-center is-align-items-center">
+        <img [src]="'assets/gif/loading.gif'" alt="">
+    </div>
+    }

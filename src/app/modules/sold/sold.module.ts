@@ -6,18 +6,20 @@ import { PiezasService } from "../../core/services/piezas.service";
 import { TipoPiezasService } from "../../core/services/tipo-piezas.service";
 import { SoldComponent } from "./pages/sold-page/sold.component";
 import { SoldRoutingModule } from './sold-routing.module';
+import { BuscadorPiezasComponent } from "../../shared/components/buscador-piezas/buscador-piezas.component";
 
 @NgModule({
     declarations: [SoldComponent],
     imports: [
         CommonModule,
         FormsModule,
-        SoldRoutingModule
+        SoldRoutingModule,
+        BuscadorPiezasComponent
     ],
     providers: [
         PiezasService,
         TipoPiezasService,
-        DatePipe
+        DatePipe,
     ]
 })
 export class SoldModule { }

@@ -1,0 +1,21 @@
+<div class="is-flex  is-justify-content-center is-align-items-center w-100 m-auto buscadorDiv">
+    <div class="m-2 w-100">
+        <input class="input is-fullwidth" type="text" placeholder="Nombre pieza" [(ngModel)]="nombreFiltro"
+            (input)="applyFilters()">
+    </div>
+    <div class="m-2 w-100">
+        <div class="select w-100">
+            <select class="w-100" [(ngModel)]="tipoPiezaFiltro" (change)="applyFilters()">
+                <option value="">No Filtro</option>
+                @for (tipo of tiposPieza; track $index) {
+                <option [value]="tipo.name">
+                    {{tipo.numPiezas}} - {{tipo.name}}
+                </option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="m-2 w-100">
+        <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
+    </div>
+</div>

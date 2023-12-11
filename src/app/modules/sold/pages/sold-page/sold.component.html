@@ -17,61 +17,55 @@
                 </div>
             </div>
             <div class="field w-100">
-                <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
+                <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Fechas</button>
             </div>
         </div>
     </header>
+    <h2 class="is-size-3 mb-2">
+        Buscador
+    </h2>
+    <buscador-piezas [piezas]="piezasNuevas" (piezasChange)="mapPiezasNuevas($event)"></buscador-piezas>
     <section class="is-flex is-flex-wrap-wrap is-justify-content-space-between">
-        <article class="my-2">
+        <article class="my-2 w-100">
             <header>
                 <h2 class="is-size-3 mb-2">
                     Piezas
                 </h2>
             </header>
-            <div style="overflow-x: auto">
-                <table class="table is-striped w-100" >
+            <div style="overflow: scroll; height: 400px;">
+                <table class="table is-striped w-100">
                     <thead>
                         <tr class="w-100">
                             <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
                             <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
                             <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
-                            <th>Vendida</th>
-                            <th>Fecha Venta</th>
+                            <th class="cursor-pointer" (click)="sortPiezas('dateSold')">Fecha Venta</th>
                             <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
                             <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr class="w-100">
-                            <th class="cursor-pointer" (click)="sortPiezas('name')">Nombre</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('price')">Precio</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('type')">Tipo</th>
-                            <th>Vendida</th>
-                            <th>Fecha Venta</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('coments')">Comentarios</th>
-                            <th class="cursor-pointer" (click)="sortPiezas('paymentMethod')">Metodo Pago</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @for (pieza of piezas; track pieza.id) {
                         <tr>
                             <td>{{pieza.name}}</td>
                             <td>{{pieza.price}} €</td>
                             <td>{{pieza.type}}</td>
-                            <td>
-                                @if (pieza.isSold) {
-                                <span class="has-text-success">Vendido</span>
-                                }
-                                @else{
-                                <span class="has-text-danger">No Vendido</span>
-
-                                }
-                            </td>
-                            <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm'}}</td>
+                            <td>{{dateformatted(pieza.dateSold)| date:'dd/MM/yyyy hh:mm aa'}}</td>
                             <td>{{pieza.coments}}</td>
-                            <td>{{pieza.paymentMethod}}</td>
+                            <td>
+                                {{pieza.paymentMethod}}
+
+                                <!-- <div class="control">
+                                    <div class="select w-100">
+                                        <select class="w-100" (change)="updatePieza(pieza)" [(ngModel)]="pieza.paymentMethod">
+                                            @for (tipo of paymentMethods; track tipo) {
+                                            <option>{{tipo}}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div> -->
+                            </td>
                             <td class="">
                                 <button class="button is-danger is-small" (click)="unSoldPieza($index)">
                                     No Vendido

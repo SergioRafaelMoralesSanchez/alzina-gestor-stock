@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+// import { Timestamp } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
 import { PiezasService } from "../../../../core/services/piezas.service";
 import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";
-import { PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
-import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
+import { PaymentMethodsArray, PiezaNueva, Venta } from "../../../../shared/models/pieza.interface";
 
 @Component({
     selector: 'app-stock',
@@ -11,15 +11,13 @@ import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
     styleUrl: './stock.component.css'
 })
 export class StockComponent implements OnInit {
-    piezas: Pieza[] = [];
-    piezasRaw: Pieza[] = [];
-    currentPieza: Undefinable<Pieza>;
-
+    piezas: PiezaNueva[] = [];
+    // piezasRaw: PiezaNueva[] = [];
+    currentPieza: Undefinable<PiezaNueva>;
+    currentVenta: Undefinable<Venta>;
+    currentStockVender: number[] = [];
+    currentStockVenderNumer: number = 1;
     paymentMethods = PaymentMethodsArray;
-
-    tipos: TipoPieza[] = [];
-    tipoPiezaFiltro: string = "";
-    nombreFiltro: string = "";
 
     showModal = false;
     loading = false;
@@ -30,77 +28,47 @@ export class StockComponent implements OnInit {
 
     async ngOnInit() {
         await this.getAllPiezas();
-        this.piezas.forEach(pieza => {
-            const index = this.tipos.findIndex(tipo => tipo.name === pieza.type);
-            if (index === -1) {
-                this.tipos.push({
-                    id: "",
-                    name: pieza.type,
-                    numPiezas: 1
-                });
-            } else {
-                this.tipos[index].numPiezas += 1;
-            }
-        });
+
     }
 
     showModalVenderPieza(index: number) {
         this.showModal = true;
-        this.currentPieza = { ... this.piezas[index], paymentMethod: this.paymentMethods[0] };
+        this.currentPieza = { ... this.piezas[index] };
+        this.currentStockVender = Array.from({ length: this.currentPieza.stock }, (_, i) => i + 1);
+        this.currentStockVenderNumer = 1;
+        this.currentVenta = {
+            dateSold: Timestamp.fromDate(new Date()),
+            coments: "",
+            paymentMethod: this.paymentMethods[0]
+        };
     }
 
     async getAllPiezas() {
         this.loading = true;
         try {
-            this.piezasRaw = await this.piezasService.getByQuery("isSold", false);
+            this.piezas = (await this.piezasService.getByQuery("stock", 0, "!="))
+                .sort((a, b) => a.name < b.name ? -1 : 1);
         } catch (error) {
             alert(error);
         } finally {
             this.loading = false;
         }
-        this.applyFilters();
     }
 
     async soldPieza() {
-        if (this.currentPieza) {
-            const piezaSold: Pieza = {
-                ...this.currentPieza,
-                isSold: true,
-                dateSold: Timestamp.fromDate(new Date())
-            };
-            await this.piezasService.updateDoc(piezaSold.id, piezaSold as Pieza);
+        if (this.currentPieza && this.currentVenta) {
+            this.currentPieza.stock -= this.currentStockVenderNumer;
+            this.currentPieza.ventas.push(this.currentVenta);
+            await this.piezasService.updateDoc(this.currentPieza.id, this.currentPieza);
             this.showModal = false;
-            this.eliminatePieza(piezaSold);
-            // await this.getAllPiezas();
+            if (this.currentPieza.stock === 0) {
+                this.eliminatePieza(this.currentPieza);
+            }
         }
     }
 
-    eliminatePieza(piezaSold: Pieza) {
+    eliminatePieza(piezaSold: PiezaNueva) {
         this.piezas = this.piezas.filter(pieza => pieza.id !== piezaSold.id);
-    }
-
-    clearFilters() {
-        this.tipoPiezaFiltro = "";
-        this.nombreFiltro = "";
-        this.piezas = [...this.piezasRaw];
-    }
-
-    applyFilters() {
-        this.piezas = [...this.piezasRaw];
-        this.onChangeTipoPieza();
-        this.onChangeNombreFiltro();
-    }
-
-    onChangeTipoPieza() {
-        if (this.tipoPiezaFiltro !== '') {
-            this.piezas = this.piezas.filter(pieza => pieza.type === this.tipoPiezaFiltro);
-        }
-    }
-
-    onChangeNombreFiltro() {
-        if (this.nombreFiltro !== '') {
-            this.piezas = this.piezas.filter(pieza => pieza.name.toLowerCase().includes(this.nombreFiltro.toLowerCase()));
-        }
     }
 
 }

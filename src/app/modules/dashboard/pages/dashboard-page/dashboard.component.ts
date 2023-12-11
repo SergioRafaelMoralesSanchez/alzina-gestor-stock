@@ -4,7 +4,7 @@ import { PiezasService } from "../../../../core/services/piezas.service";
 import { TipoPiezasService } from "../../../../core/services/tipo-piezas.service";
 import { sortArray } from "../../../../shared/components/utils/utils";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
-import { PaymentMethodsArray, Pieza, } from "../../../../shared/models/pieza.interface";
+import { PiezaNueva } from "../../../../shared/models/pieza.interface";
 import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 
 @Component({
@@ -13,22 +13,21 @@ import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
     styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-    piezas: Pieza[] = [];
-    piezasRaw: Pieza[] = [];
+    piezas: PiezaNueva[] = [];
+    piezasRaw: PiezaNueva[] = [];
+
+    loading = false;
 
     isEditMode = false;
     isEditModeTipo = false;
-    nuevaPieza: Pieza = {
+    nuevaPieza: PiezaNueva = {
         id: "",
         name: "",
         type: "",
-        isSold: false,
-        dateSold: null,
         price: 0,
-        coments: "",
-        paymentMethod: PaymentMethodsArray[0]
+        stock: 1,
+        ventas: []
     };
-    numeroPiezas = 1;
 
     tiposPieza: TipoPieza[] = [];
     nuevoTipoPieza: TipoPieza = {
@@ -50,8 +49,8 @@ export class DashboardComponent implements OnInit {
     }
     async ngOnInit() {
 
-        await this.getAllTiposPiezas();
         await this.getAllPiezas();
+        await this.getAllTiposPiezas();
     }
 
     //filtros
@@ -81,26 +80,28 @@ export class DashboardComponent implements OnInit {
     }
 
     async getAllPiezas() {
-        this.piezasRaw = (await this.piezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
+        this.loading = true;
+        try {
+            this.piezasRaw = (await this.piezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.loading = false;
+        }
 
         this.piezas = [...this.piezasRaw];
     }
     async savePieza() {
         if (this.checkFormNuevaPieza()) {
 
-            for (let index = 0; index < this.numeroPiezas; index++) {
-                await this.piezasService.addDoc(this.nuevaPieza);
-            }
-            this.numeroPiezas = 1;
+            await this.piezasService.addDoc(this.nuevaPieza);
             this.nuevaPieza = {
                 id: "",
                 name: "",
                 type: "",
-                isSold: false,
-                dateSold: null,
                 price: 0,
-                coments: "",
-                paymentMethod: PaymentMethodsArray[0]
+                stock: 1,
+                ventas: []
             };
             await this.getAllPiezas();
         }
@@ -109,29 +110,26 @@ export class DashboardComponent implements OnInit {
         if (this.checkFormNuevaPieza()) {
 
             await this.piezasService.updateDoc(this.nuevaPieza.id, this.nuevaPieza);
-            this.numeroPiezas = 1;
             this.isEditMode = false;
             this.nuevaPieza = {
                 id: "",
                 name: "",
                 type: "",
-                isSold: false,
-                dateSold: null,
                 price: 0,
-                coments: "",
-                paymentMethod: PaymentMethodsArray[0]
+                stock: 1,
+                ventas: []
             };
             await this.getAllPiezas();
         }
     }
 
-    async eliminarPieza(pieza: Pieza) {
+    async eliminarPieza(pieza: PiezaNueva) {
 
         await this.piezasService.deleteDoc(pieza.id);
         await this.getAllPiezas();
     }
 
-    async editarPieza(pieza: Pieza) {
+    async editarPieza(pieza: PiezaNueva) {
         this.isEditMode = true;
         this.nuevaPieza = { ...pieza };
     }
@@ -145,13 +143,31 @@ export class DashboardComponent implements OnInit {
     }
 
     /**
-     * Tipos Pieza
+     * Tipos PiezaNueva
      */
 
     async getAllTiposPiezas() {
-        this.tiposPieza = (await this.tipoPiezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
+        this.tiposPieza = (await this.tipoPiezasService.getAll()).map(tipo => ({
+            id: tipo.id,
+            name: tipo.name,
+            numPiezas: 0,
+        })).sort((a, b) => a.name < b.name ? -1 : 1);
+        this.calculateTiposPiezas();
     }
-
+    calculateTiposPiezas() {
+        this.piezas.forEach(pieza => {
+            const index = this.tiposPieza.findIndex(tipo => tipo.name === pieza.type);
+            if (index === -1) {
+                this.tiposPieza.push({
+                    id: "",
+                    name: pieza.type,
+                    numPiezas: 1
+                });
+            } else {
+                this.tiposPieza[index].numPiezas += 1;
+            }
+        });
+    }
     async saveNuevoTipoPieza() {
         if (this.checkFormNuevoTipoPieza()) {
             await this.tipoPiezasService.addDoc(this.nuevoTipoPieza);
@@ -191,10 +207,10 @@ export class DashboardComponent implements OnInit {
         return !!this.nuevoTipoPieza.name.length;
     }
 
-    sortPiezas(field: keyof Pieza) {
+    sortPiezas(field: keyof PiezaNueva) {
         const order = this.sortFieldPieza === field ? 1 : -1;
         this.sortFieldPieza = field;
-        this.piezas = sortArray<Pieza>(this.piezas, field, order);
+        this.piezas = sortArray<PiezaNueva>(this.piezas, field, order);
 
     }
 

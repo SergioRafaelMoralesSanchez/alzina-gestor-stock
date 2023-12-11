@@ -1,10 +1,13 @@
+import { DatePipe, registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es';
 import { Component } from '@angular/core';
-import { PiezasService } from "../../../../core/services/piezas.service";
-import { PaymentMethods, PaymentMethodsArray, Pieza } from "../../../../shared/models/pieza.interface";
 import { Timestamp } from "firebase/firestore";
-import { Nullable } from "../../../../shared/helpers/Nullable.interface";
-import { DatePipe } from "@angular/common";
+import { PiezasService } from "../../../../core/services/piezas.service";
 import { sortArray } from "../../../../shared/components/utils/utils";
+import { Nullable } from "../../../../shared/helpers/Nullable.interface";
+import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";
+import { PaymentMethods, PaymentMethodsArray, Pieza, PiezaNueva } from "../../../../shared/models/pieza.interface";
+registerLocaleData(es);
 
 @Component({
     selector: 'app-sold',
@@ -12,9 +15,11 @@ import { sortArray } from "../../../../shared/components/utils/utils";
     styleUrl: './sold.component.css'
 })
 export class SoldComponent {
+
     fechaFiltro: string | null = "all";
     fechasVentas: string[] = [];
     piezas: Pieza[] = [];
+    piezasNuevas: PiezaNueva[] = [];
 
     paymentMethods = PaymentMethodsArray;
 
@@ -33,28 +38,57 @@ export class SoldComponent {
     async getAllPiezas() {
         try {
             this.loading = true;
-            this.piezas = (await this.piezasService.getByQuery("isSold", true)).sort((a, b) => a.dateSold! < b.dateSold! ? 1 : -1);
+            this.piezasNuevas = await this.piezasService.getByQuery("ventas", [], "!=");
+
+            this.mapPiezasNuevas(this.piezasNuevas);
             this.generateFechasVentas();
         } catch (error) {
             alert(error);
         } finally {
             this.loading = false;
         }
-
     }
+
+    mapPiezasNuevas(piezas: PiezaNueva[]) {
+        this.piezas = [];
+        piezas.forEach(piezaNueva => {
+            piezaNueva.ventas.forEach(venta => {
+                this.piezas.push({
+                    id: piezaNueva.id,
+                    name: piezaNueva.name,
+                    type: piezaNueva.type,
+                    dateSold: venta.dateSold,
+                    price: piezaNueva.price,
+                    coments: venta.coments,
+                    paymentMethod: venta.paymentMethod,
+                });
+            });
+        });
+        this.piezas = this.piezas.sort((a, b) => a.dateSold! < b.dateSold! ? 1 : -1);
+    }
+
     async unSoldPieza(index: number) {
-        const piezaSold: Pieza = {
-            ...this.piezas[index],
-            isSold: false,
-            dateSold: null
-        };
-        await this.piezasService.updateDoc(piezaSold.id, piezaSold);
-        // await this.getAllPiezas();
-        this.eliminatePieza(piezaSold);
-
+        const piezaVender = this.piezas[index];
+        const piezaSold: Undefinable<PiezaNueva> = this.piezasNuevas.find(piezaNueva => piezaNueva.id === piezaVender.id);
+        if (piezaSold) {
+            piezaSold.stock += 1;
+            piezaSold.ventas = piezaSold.ventas.filter(venta => venta.dateSold !== piezaVender.dateSold);
+            await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+            if (!piezaSold.ventas.length) {
+                this.eliminatePieza(piezaSold);
+            }
+        }
+    }
+    async updatePieza(piezaVender: Pieza) {
+        const piezaSold: Undefinable<PiezaNueva> = this.piezasNuevas.find(piezaNueva => piezaNueva.id === piezaVender.id);
+        if (piezaSold) {
+            const index = piezaSold.ventas.findIndex(venta => venta.dateSold === piezaVender.dateSold);
+            piezaSold.ventas[index].paymentMethod = piezaVender.paymentMethod;
+            await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+        }
     }
 
-    eliminatePieza(piezaSold: Pieza) {
+    eliminatePieza(piezaSold: PiezaNueva) {
         this.piezas = this.piezas.filter(pieza => pieza.id !== piezaSold.id);
     }
     generateFechasVentas() {
@@ -75,7 +109,7 @@ export class SoldComponent {
         return this.piezas.reduce(
             (accumulator, pieza) => {
                 const fechaTransformada = this.generarFechaSold(pieza);
-                if (this.fechaFiltro === "all" || (pieza.paymentMethod === paymentMethod && fechaTransformada === this.fechaFiltro)) {
+                if (pieza.paymentMethod === paymentMethod && (this.fechaFiltro === "all" || fechaTransformada === this.fechaFiltro)) {
                     accumulator += pieza.price;
                 }
                 return accumulator;

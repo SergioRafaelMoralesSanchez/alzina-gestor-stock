@@ -3,27 +3,9 @@
         <h2 class="is-size-3 mb-2">
             Stock
         </h2>
-        <div class="is-flex  is-justify-content-center is-align-items-center w-100 m-auto buscadorDiv">
-            <div class="m-2 w-100">
-                <input class="input is-fullwidth" type="text" placeholder="Nombre pieza" [(ngModel)]="nombreFiltro"
-                    (input)="applyFilters()">
-            </div>
-            <div class="m-2 w-100">
-                <div class="select w-100">
-                    <select class="w-100" [(ngModel)]="tipoPiezaFiltro" (change)="applyFilters()">
-                        <option value="">No Filtro</option>
-                        @for (tipo of tipos; track $index) {
-                        <option [value]="tipo.name">
-                            {{tipo.numPiezas}} - {{tipo.name}}
-                        </option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="m-2 w-100">
-                <button class="button is-light is-fullwidth" (click)="clearFilters()">Limpiar Filtros</button>
-            </div>
-        </div>
+        @if (!loading) {
+        <buscador-piezas [(piezas)]="piezas"></buscador-piezas>
+        }
     </header>
 
 
@@ -31,7 +13,7 @@
     <main>
         <section class="is-multiline  is-justify-content-center " style="width: 100%;">
             @for (pieza of piezas; track $index) {
-            <div class="card m-2">
+            <div class="card my-2">
                 <div class="card-content">
                     <div class="title is-flex is-justify-content-space-between">
                         <p>{{pieza.name}}</p>
@@ -42,6 +24,11 @@
                     </p>
                 </div>
                 <footer class="card-footer">
+                    <p class="card-footer-item">
+                        <strong>
+                            Stock: {{pieza.stock}}
+                        </strong>
+                    </p>
                     <p class="card-footer-item">
                         <button class="button is-success" (click)="showModalVenderPieza($index)">Vender</button>
                     </p>
@@ -57,7 +44,7 @@
     }
 
 </div>
-@if(currentPieza){
+@if(currentPieza && currentVenta){
 
 <div class="modal" [ngClass]="{'is-active': showModal}">
     <div class="modal-background"></div>
@@ -71,15 +58,25 @@
             <div class="field">
                 <label class="label">Comentarios sobre la venta</label>
                 <div class="control">
-                    <textarea [(ngModel)]="currentPieza.coments" class="textarea"
+                    <textarea [(ngModel)]="currentVenta.coments" class="textarea"
                         placeholder="e.g. Hello world"></textarea>
                 </div>
             </div>
             <div class="field">
-                <label class="label">Tipo de Pieza</label>
+                <label class="label">Numero de Piezas</label>
+                <div class="select w-100">
+                    <select class="w-100" [(ngModel)]="currentStockVenderNumer">
+                        @for (numeroStock of currentStockVender; track numeroStock) {
+                        <option>{{numeroStock}}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Tipo de Pago</label>
                 <div class="control">
                     <div class="select w-100">
-                        <select class="w-100" [(ngModel)]="currentPieza.paymentMethod">
+                        <select class="w-100" [(ngModel)]="currentVenta.paymentMethod">
                             <option value="">Selecciona un tipo</option>
                             @for (tipo of paymentMethods; track tipo) {
                             <option>{{tipo}}</option>

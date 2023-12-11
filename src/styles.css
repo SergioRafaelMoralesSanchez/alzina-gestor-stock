@@ -25,3 +25,7 @@ body {
         width: 100%;
     }
 }
+
+.button.is-success {
+    background-color: #389d70 !important;
+}
