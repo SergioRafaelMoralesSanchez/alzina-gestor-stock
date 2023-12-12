@@ -4,27 +4,23 @@
             <img [src]="'assets/img/alzina.png'" width="112" height="28">
         </a>
 
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarHeader">
+        <a role="button" class="navbar-burger" (click)="isShowMenu=!isShowMenu">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
         </a>
     </div>
-
-    <div id="navbarHeader" class="navbar-menu">
+    <div id="navbarHeader" class="navbar-menu" [ngClass]="isShowMenu?'is-active':''">
         <div class="navbar-start">
-            <a class="navbar-item" [routerLink]="['/stock']">
+            <a class="navbar-item" [routerLink]="['/stock']" (click)="isShowMenu=!isShowMenu">
                 Stock
             </a>
-            <a class="navbar-item" [routerLink]="['/sold']">
+            <a class="navbar-item" [routerLink]="['/sold']" (click)="isShowMenu=!isShowMenu">
                 Sold
             </a>
-            <a class="navbar-item" [routerLink]="['/dashboard']">
+            <a class="navbar-item" [routerLink]="['/dashboard']" (click)="isShowMenu=!isShowMenu">
                 Dashboard
             </a>
-            <!-- <a class="navbar-item" [routerLink]="['/dashboard/pruebas']">
-                pruebas
-            </a> -->
         </div>
     </div>
 </nav>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-// import { Timestamp } from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
 import { PiezasService } from "../../../../core/services/piezas.service";
 import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";

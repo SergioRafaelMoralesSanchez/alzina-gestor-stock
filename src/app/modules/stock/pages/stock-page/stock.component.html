@@ -1,4 +1,4 @@
-<div class="container p-4">
+<div class="container">
     <header class="mb-6">
         <h2 class="is-size-3 mb-2">
             Stock
@@ -11,7 +11,7 @@
 
     @if (!loading) {
     <main>
-        <section class="is-multiline  is-justify-content-center " style="width: 100%;">
+        <section class="cards">
             @for (pieza of piezas; track $index) {
             <div class="card my-2">
                 <div class="card-content">
