@@ -3,7 +3,6 @@ export function sortArray<T>(array: T[], key: keyof T, order: number): T[] {
         const valueA = a[key] ?? "";
         const valueB = b[key] ?? "";
         let result = 0;
-        console.log(typeof valueA);
         if (typeof valueA === 'object' && typeof valueB === 'object') {
             result = valueA.toString().localeCompare(valueB.toString());
         } else if (typeof valueA === 'string' && typeof valueB === 'string') {

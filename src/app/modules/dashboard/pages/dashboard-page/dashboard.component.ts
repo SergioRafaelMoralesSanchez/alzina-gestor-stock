@@ -125,7 +125,6 @@ export class DashboardComponent implements OnInit {
             if (tipoPieza) {
                 this.tiposPieza.push(tipoPieza);
                 this.tiposPieza = this.tiposPieza.sort((a, b) => a.name < b.name ? -1 : 1);
-                console.log("🚀 ~ file: dashboard.component.ts:128 ~ DashboardComponent ~ saveNuevoTipoPieza ~  this.tiposPieza:", this.tiposPieza);
             }
             this.nuevoTipoPieza = {
                 id: "",
