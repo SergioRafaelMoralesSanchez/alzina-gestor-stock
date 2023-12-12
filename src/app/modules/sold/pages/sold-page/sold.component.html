@@ -55,21 +55,15 @@
                             <td>{{pieza.coments}}</td>
                             <td>
                                 {{pieza.paymentMethod}}
-
-                                <!-- <div class="control">
-                                    <div class="select w-100">
-                                        <select class="w-100" (change)="updatePieza(pieza)" [(ngModel)]="pieza.paymentMethod">
-                                            @for (tipo of paymentMethods; track tipo) {
-                                            <option>{{tipo}}</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div> -->
                             </td>
                             <td class="">
-                                <button class="button is-danger is-small" (click)="unSoldPieza($index)">
-                                    No Vendido
-                                </button>
+                                <div class="is-flex is-flex-wrap-nowrap">
+                                    <button class="mx-1 button is-link" (click)="editarPieza(pieza)">Editar</button>
+                                    <button class="mx-1 button is-danger" (click)="unSoldPieza($index)">
+                                        No Vendido
+                                    </button>
+                                </div>
+
                             </td>
                         </tr>
                         }
@@ -78,7 +72,7 @@
                 </table>
             </div>
         </article>
-        <article class="my-2">
+        <article class="my-2 w-100">
             <header>
                 <h2 class="is-size-3 mb-2">Desglose Ventas</h2>
             </header>
@@ -112,5 +106,46 @@
 } @else {
 <div class="w-100 is-flex is-justify-content-center is-align-items-center">
     <img [src]="'assets/gif/loading.gif'" alt="">
+</div>
+}
+
+
+
+@if(editPieza){
+
+<div class="modal" [ngClass]="{'is-active': showModal}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">{{editPieza.name}}</p>
+            <button class="delete" aria-label="close" (click)="showModal = false"></button>
+        </header>
+        <section class="modal-card-body">
+
+            <div class="field">
+                <label class="label">Comentarios sobre la venta</label>
+                <div class="control">
+                    <textarea [(ngModel)]="editPieza.coments" class="textarea"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Tipo de Pago</label>
+                <div class="control">
+                    <div class="select w-100">
+                        <select class="w-100" [(ngModel)]="editPieza.paymentMethod">
+                            @for (tipo of paymentMethods; track tipo) {
+                            <option>{{tipo}}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-link" (click)="updatePieza(editPieza)">Actualizar</button>
+            <button class="button" (click)="showModal = false">Cancelar</button>
+        </footer>
+    </div>
+
 </div>
 }

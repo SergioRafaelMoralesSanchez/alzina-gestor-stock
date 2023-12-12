@@ -11,29 +11,26 @@
                 <div class="field">
                     <label class="label">Nombre pieza</label>
                     <div class="control">
-                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.name" class="input" type="text"
-                            placeholder="Text input">
+                        <input [(ngModel)]="nuevaPieza.name" class="input" type="text" placeholder="Text input">
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Precio pieza</label>
                     <div class="control">
-                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.price" class="input" type="number"
-                            placeholder="0">
+                        <input [(ngModel)]="nuevaPieza.price" class="input" type="number" placeholder="0">
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Numero de Piezas</label>
                     <div class="control">
-                        <input (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.stock" class="input" type="number"
-                            placeholder="1">
+                        <input [(ngModel)]="nuevaPieza.stock" class="input" type="number" placeholder="1">
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Tipo de Pieza</label>
                     <div class="control">
                         <div class="select w-100">
-                            <select class="w-100" (keyup.enter)="savePieza()" [(ngModel)]="nuevaPieza.type">
+                            <select class="w-100" [(ngModel)]="nuevaPieza.type">
                                 <option value="">Selecciona un tipo</option>
                                 @for (tipoPieza of tiposPieza; track tipoPieza.id) {
                                 <option>{{tipoPieza.name}}</option>
@@ -53,12 +50,12 @@
             </div>
         </article>
 
-      
+
         <h2 class="is-size-3 mb-2">
-            Buscador 
+            Buscador
         </h2>
         <buscador-piezas [(piezas)]="piezas"></buscador-piezas>
-        
+
         <article>
             <header>
                 <h2 class="is-size-3 mb-2">
@@ -178,7 +175,7 @@
 </main>
 
 } @else {
-    <div class="w-100 is-flex is-justify-content-center is-align-items-center">
-        <img [src]="'assets/gif/loading.gif'" alt="">
-    </div>
-    }
+<div class="w-100 is-flex is-justify-content-center is-align-items-center">
+    <img [src]="'assets/gif/loading.gif'" alt="">
+</div>
+}

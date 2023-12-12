@@ -14,7 +14,6 @@ import { TipoPieza } from "../../../../shared/models/tipo-pieza.interface";
 })
 export class DashboardComponent implements OnInit {
     piezas: PiezaNueva[] = [];
-    piezasRaw: PiezaNueva[] = [];
 
     loading = false;
 
@@ -38,9 +37,6 @@ export class DashboardComponent implements OnInit {
     sortFieldPieza = "";
     sortFieldTipoPieza = "";
 
-    tipoPiezaFiltro: string = "";
-    nombreFiltro: string = "";
-
     constructor(
         private piezasService: PiezasService,
         private tipoPiezasService: TipoPiezasService
@@ -48,53 +44,29 @@ export class DashboardComponent implements OnInit {
 
     }
     async ngOnInit() {
-
         await this.getAllPiezas();
         await this.getAllTiposPiezas();
-    }
-
-    //filtros
-
-    clearFilters() {
-        this.tipoPiezaFiltro = "";
-        this.nombreFiltro = "";
-        this.piezas = [...this.piezasRaw];
-    }
-
-    applyFilters() {
-        this.piezas = [...this.piezasRaw];
-        this.onChangeTipoPieza();
-        this.onChangeNombreFiltro();
-    }
-
-    onChangeTipoPieza() {
-        if (this.tipoPiezaFiltro !== '') {
-            this.piezas = this.piezas.filter(pieza => pieza.type === this.tipoPiezaFiltro);
-        }
-    }
-
-    onChangeNombreFiltro() {
-        if (this.nombreFiltro !== '') {
-            this.piezas = this.piezas.filter(pieza => pieza.name.toLowerCase().includes(this.nombreFiltro.toLowerCase()));
-        }
     }
 
     async getAllPiezas() {
         this.loading = true;
         try {
-            this.piezasRaw = (await this.piezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
+            this.piezas = (await this.piezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
         } catch (error) {
             console.error(error);
         } finally {
             this.loading = false;
         }
 
-        this.piezas = [...this.piezasRaw];
     }
     async savePieza() {
         if (this.checkFormNuevaPieza()) {
 
-            await this.piezasService.addDoc(this.nuevaPieza);
+            const pieza = await this.piezasService.addDoc(this.nuevaPieza);
+            if (pieza) {
+                this.piezas.push(pieza);
+                this.piezas.sort((a, b) => a.name < b.name ? -1 : 1);
+            }
             this.nuevaPieza = {
                 id: "",
                 name: "",
@@ -103,7 +75,6 @@ export class DashboardComponent implements OnInit {
                 stock: 1,
                 ventas: []
             };
-            await this.getAllPiezas();
         }
     }
     async updatePieza() {
@@ -119,19 +90,17 @@ export class DashboardComponent implements OnInit {
                 stock: 1,
                 ventas: []
             };
-            await this.getAllPiezas();
         }
     }
 
-    async eliminarPieza(pieza: PiezaNueva) {
-
-        await this.piezasService.deleteDoc(pieza.id);
-        await this.getAllPiezas();
+    async eliminarPieza(piezaEliminar: PiezaNueva) {
+        await this.piezasService.deleteDoc(piezaEliminar.id);
+        this.piezas = this.piezas.filter(pieza => pieza.id !== piezaEliminar.id);
     }
 
     async editarPieza(pieza: PiezaNueva) {
         this.isEditMode = true;
-        this.nuevaPieza = { ...pieza };
+        this.nuevaPieza = pieza;
     }
 
     checkFormNuevaPieza() {
@@ -147,36 +116,23 @@ export class DashboardComponent implements OnInit {
      */
 
     async getAllTiposPiezas() {
-        this.tiposPieza = (await this.tipoPiezasService.getAll()).map(tipo => ({
-            id: tipo.id,
-            name: tipo.name,
-            numPiezas: 0,
-        })).sort((a, b) => a.name < b.name ? -1 : 1);
-        this.calculateTiposPiezas();
+        this.tiposPieza = (await this.tipoPiezasService.getAll()).sort((a, b) => a.name < b.name ? -1 : 1);
     }
-    calculateTiposPiezas() {
-        this.piezas.forEach(pieza => {
-            const index = this.tiposPieza.findIndex(tipo => tipo.name === pieza.type);
-            if (index === -1) {
-                this.tiposPieza.push({
-                    id: "",
-                    name: pieza.type,
-                    numPiezas: 1
-                });
-            } else {
-                this.tiposPieza[index].numPiezas += 1;
-            }
-        });
-    }
+
     async saveNuevoTipoPieza() {
         if (this.checkFormNuevoTipoPieza()) {
-            await this.tipoPiezasService.addDoc(this.nuevoTipoPieza);
+            const tipoPieza = await this.tipoPiezasService.addDoc(this.nuevoTipoPieza);
+            if (tipoPieza) {
+                this.tiposPieza.push(tipoPieza);
+                this.tiposPieza = this.tiposPieza.sort((a, b) => a.name < b.name ? -1 : 1);
+                console.log("🚀 ~ file: dashboard.component.ts:128 ~ DashboardComponent ~ saveNuevoTipoPieza ~  this.tiposPieza:", this.tiposPieza);
+            }
             this.nuevoTipoPieza = {
                 id: "",
                 name: "",
                 numPiezas: 1
             };
-            await this.getAllTiposPiezas();
+
         }
     }
     async updateTipoPieza() {
@@ -189,18 +145,16 @@ export class DashboardComponent implements OnInit {
                 name: "",
                 numPiezas: 1
             };
-            await this.getAllTiposPiezas();
         }
     }
     async editarTipoPieza(tipoPieza: TipoPieza) {
         this.isEditModeTipo = true;
-        this.nuevoTipoPieza = { ...tipoPieza };
+        this.nuevoTipoPieza = tipoPieza;
     }
 
-    async eliminarTipoPieza(tipo: TipoPieza) {
-
-        await this.tipoPiezasService.deleteDoc(tipo.id);
-        await this.getAllTiposPiezas();
+    async eliminarTipoPieza(tipoEliminar: TipoPieza) {
+        await this.tipoPiezasService.deleteDoc(tipoEliminar.id);
+        this.tiposPieza = this.tiposPieza.filter(tipo => tipo.id !== tipoEliminar.id);
     }
 
     checkFormNuevoTipoPieza() {

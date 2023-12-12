@@ -11,17 +11,6 @@ export class BaseService<T> {
         this.db = getFirestore(appFirebase);
     }
 
-    async getFirst(): Promise<Undefinable<T>> {
-
-        const q = query(collection(this.db, this.collectionName));
-        const querySnapshot = await getDocs(q);
-        const data: T[] = querySnapshot.docs.map((d) => ({
-            ...d.data() as T,
-            id: d.id
-        }));
-        return data[0];
-    }
-
     async getAll(): Promise<T[]> {
         const q = query(collection(this.db, this.collectionName));
         const querySnapshot = await getDocs(q);
@@ -60,11 +49,15 @@ export class BaseService<T> {
     async addDoc(encargo: T): Promise<T | undefined> {
         try {
             const docRef = await addDoc(collection(this.db, this.collectionName), encargo as DocumentData);
-
-            return {
-                ...docRef as T,
-                id: docRef.id
-            };
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                return {
+                    ...docSnap.data() as T,
+                    id: docSnap.id
+                };
+            } else {
+                return undefined;
+            }
         } catch (e) {
             console.error("Error adding document: ", e);
         }

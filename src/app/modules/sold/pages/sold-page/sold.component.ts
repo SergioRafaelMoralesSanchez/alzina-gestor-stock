@@ -7,6 +7,7 @@ import { sortArray } from "../../../../shared/components/utils/utils";
 import { Nullable } from "../../../../shared/helpers/Nullable.interface";
 import { Undefinable } from "../../../../shared/helpers/Undefinable.interface";
 import { PaymentMethods, PaymentMethodsArray, Pieza, PiezaNueva } from "../../../../shared/models/pieza.interface";
+
 registerLocaleData(es);
 
 @Component({
@@ -23,9 +24,12 @@ export class SoldComponent {
 
     paymentMethods = PaymentMethodsArray;
 
+    showModal = false;
     loading = false;
 
     sortFieldPieza = "";
+    editPieza: Undefinable<Pieza>;
+
     constructor(
         private datePipe: DatePipe,
         private piezasService: PiezasService,
@@ -73,18 +77,38 @@ export class SoldComponent {
         if (piezaSold) {
             piezaSold.stock += 1;
             piezaSold.ventas = piezaSold.ventas.filter(venta => venta.dateSold !== piezaVender.dateSold);
-            await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+            try {
+                await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.showModal = false;
+            }
             if (!piezaSold.ventas.length) {
                 this.eliminatePieza(piezaSold);
             }
         }
     }
+    editarPieza(piezaVender: Pieza) {
+        this.editPieza = piezaVender;
+        this.showModal = true;
+    }
+
     async updatePieza(piezaVender: Pieza) {
-        const piezaSold: Undefinable<PiezaNueva> = this.piezasNuevas.find(piezaNueva => piezaNueva.id === piezaVender.id);
+        const indexPiezasNuevas = this.piezasNuevas.findIndex(piezaNueva => piezaNueva.id === piezaVender.id);
+        const piezaSold = this.piezasNuevas[indexPiezasNuevas];
         if (piezaSold) {
             const index = piezaSold.ventas.findIndex(venta => venta.dateSold === piezaVender.dateSold);
+
             piezaSold.ventas[index].paymentMethod = piezaVender.paymentMethod;
-            await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+            piezaSold.ventas[index].coments = piezaVender.coments;
+            try {
+                await this.piezasService.updateDoc(piezaSold.id, piezaSold);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.showModal = false;
+            }
         }
     }
 
