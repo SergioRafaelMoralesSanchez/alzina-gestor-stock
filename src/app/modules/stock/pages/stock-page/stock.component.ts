@@ -11,7 +11,7 @@ import { PaymentMethodsArray, PiezaNueva, Venta } from "../../../../shared/model
 })
 export class StockComponent implements OnInit {
     piezas: PiezaNueva[] = [];
-    // piezasRaw: PiezaNueva[] = [];
+
     currentPieza: Undefinable<PiezaNueva>;
     currentVenta: Undefinable<Venta>;
     currentStockVender: number[] = [];
@@ -32,7 +32,7 @@ export class StockComponent implements OnInit {
 
     showModalVenderPieza(index: number) {
         this.showModal = true;
-        this.currentPieza = { ... this.piezas[index] };
+        this.currentPieza = this.piezas[index];
         this.currentStockVender = Array.from({ length: this.currentPieza.stock }, (_, i) => i + 1);
         this.currentStockVenderNumer = 1;
         this.currentVenta = {
@@ -57,7 +57,9 @@ export class StockComponent implements OnInit {
     async soldPieza() {
         if (this.currentPieza && this.currentVenta) {
             this.currentPieza.stock -= this.currentStockVenderNumer;
-            this.currentPieza.ventas.push(this.currentVenta);
+            for (let i = 0; i < this.currentStockVenderNumer; i++) {
+                this.currentPieza.ventas.push(this.currentVenta);
+            }
             await this.piezasService.updateDoc(this.currentPieza.id, this.currentPieza);
             this.showModal = false;
             if (this.currentPieza.stock === 0) {

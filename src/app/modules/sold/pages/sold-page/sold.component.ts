@@ -20,6 +20,7 @@ export class SoldComponent {
     fechaFiltro: string | null = "all";
     fechasVentas: string[] = [];
     piezas: Pieza[] = [];
+    piezasRaw: Pieza[] = [];
     piezasNuevas: PiezaNueva[] = [];
 
     paymentMethods = PaymentMethodsArray;
@@ -69,6 +70,7 @@ export class SoldComponent {
             });
         });
         this.piezas = this.piezas.sort((a, b) => a.dateSold! < b.dateSold! ? 1 : -1);
+        this.piezasRaw = [...this.piezas];
     }
 
     async unSoldPieza(index: number) {
@@ -143,6 +145,14 @@ export class SoldComponent {
         return this.datePipe.transform(this.dateformatted(pieza.dateSold), "dd/MM/yyyy") ?? "";
     }
 
+    filterPiezas() {
+        this.piezas = [...this.piezasRaw];
+        this.piezas = this.piezas.filter(
+            (pieza) => {
+                const fechaTransformada = this.generarFechaSold(pieza);
+                return (this.fechaFiltro === "all" || fechaTransformada === this.fechaFiltro);
+            });
+    }
     getTotalPorFecha() {
         return this.piezas.reduce(
             (accumulator, pieza) => {
